@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 import pdb
 
+import resources.logging_config as fuz_logging
+log = fuz_logging.get_logger("cli", json=False)
+
 # Given sets
 C = [1, 0, 1]
 D = [0.4, 0.5, 0.6]
-E = [0.3, 0.0, 1]
+E = [0.3, 0.0, 0.1]
 F = [0.6, 0, 0]
 G = [0.3, 0.3, 0.3]
 H = [0.5, 0.1, 0.4]
@@ -38,10 +41,10 @@ class fuzzy:
         (min(a1, b1), min(a2, b2)...)
         """
         n = len(set1)
-        union = []
+        intersection = []
         for i in range(n):
-            union.append(min(set1[i], set2[i]))
-        return union
+            intersection.append(min(set1[i], set2[i]))
+        return intersection
     
     def get_count(self, s):
         """Given a set A, return sum(A)"""
@@ -50,12 +53,12 @@ class fuzzy:
     def get_fuzzy_equality(self, set1, set2):
         """
         Given a A and B, return fuzzy subsethood
-        S(A, B) = c(A intersection B) / c(A)
+        E(A, B) = c(A intersection B) / c(A union B) 
         """
-        n = len(set1)
-        intersection = self.get_intersection(set1, set2)
-        union = self.get_union(set1, set2)
-        return self.get_count(intersection) / self.get_count(union)
+        c_intersection = self.get_count(self.get_intersection(set1, set2))
+        c_union = self.get_count(self.get_union(set1, set2))
+        log.debug(f"Returning {c_intersection}/{c_union}")
+        return c_intersection / c_union
   
     def get_subsethood(self, set1, set2):
         """
@@ -66,11 +69,11 @@ class fuzzy:
         intersection = self.get_intersection(set1, set2)
         return self.get_count(intersection) / self.get_count(set1)
             
-    def degree_of_fuzziness(self):
+    def degree_of_fuzziness(self, set1):
         """
         Given a set A, return the degree of fuzziness
-        F(A) = E(A,A^c) = S(A union A^c, A intersection A^c)
+        F(A) = E(A,) = S(A union A^c, A intersection A^c)
         """
-        union = self.get_union(self.set, self.get_complement(self.set))
-        intersection = self.get_intersection(self.set, self.get_complement(self.set))
-        return self.get_count(union) - self.get_count(intersection) # Using get_count() instead of sum for readability for educational purpose
+        union = self.get_union(set1, self.get_complement(set1))
+        intersection = self.get_intersection(set1, self.get_complement(set1))
+        return self.get_count(intersection) / self.get_count(union) # Using get_count() instead of sum for readability for educational purposeA^c

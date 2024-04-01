@@ -55,7 +55,6 @@ def test_count():
     assert fail_case != actual
            
            
-@pytest.mark.curr
 def test_equality():
     f = cmn.fuzzy(cmn.C)
     fail_case = -1
@@ -64,13 +63,13 @@ def test_equality():
     assert round(expected) == round(actual)
     assert fail_case != actual
     
-    expected = 1/2.5
+    expected = 2/5
     actual = f.get_fuzzy_equality(cmn.C, cmn.D)
     assert round(expected) == round(actual)
     assert fail_case != actual
     
-    expected = 0.4/1.7
-    actual = f.get_fuzzy_equality(cmn.D, cmn.F)
+    expected = 1/5
+    actual = f.get_fuzzy_equality(cmn.C, cmn.E)
     assert round(expected) == round(actual)
     assert fail_case != actual
     
@@ -94,13 +93,23 @@ def test_subsethood():
     assert fail_case != actual
     
 
+@pytest.mark.curr
 def test_degree_of_fuzziness():
-    f = cmn.fuzzy(cmn.D)
-    fail_case = [-1, -1, -1]
-    expected = [0.4, 0, 0.6]
-    actual = f.get_intersection(cmn.C, cmn.D)
-    for i in range(len(f.set)):
-        assert expected[i] == actual[i]
-        assert fail_case[i] != actual[i]
+    f = cmn.fuzzy(cmn.C)
+    fail_case = -1
+    expected = 0
+    actual = f.degree_of_fuzziness(cmn.C)
+    assert round(expected) == round(actual)
+    assert fail_case != actual
+    
+    expected = 1
+    actual = f.degree_of_fuzziness(cmn.D)
+    assert round(expected) == round(actual)
+    assert fail_case != actual
+    
+    expected = 0.6/2.4
+    actual = f.degree_of_fuzziness(cmn.F)
+    assert round(expected) == round(actual)
+    assert fail_case != actual
         
         
